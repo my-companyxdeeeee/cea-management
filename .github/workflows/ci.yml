@@ -35,17 +35,20 @@ jobs:
         image: postgres:16-alpine
         env:
           POSTGRES_DB: cea_management
-          POSTGRES_USER: cea_app
-          POSTGRES_PASSWORD: change_me
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U cea_app -d cea_management"
+          --health-cmd "pg_isready -U postgres -d cea_management"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
     env:
       DATABASE_URL: postgresql://cea_app:change_me@localhost:5432/cea_management
+      DATABASE_MIGRATOR_URL: postgresql://postgres:postgres@localhost:5432/cea_management
+      DATABASE_RUNTIME_USER: cea_app
+      DATABASE_RUNTIME_PASSWORD: change_me
       JWT_SECRET: ci-only-secret-with-at-least-32-characters
     steps:
       - uses: actions/checkout@v4
@@ -54,5 +57,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run db:provision-runtime
       - run: npm run db:migrate
       - run: npm test -- src/infrastructure/database/tenant-isolation.integration.test.ts
