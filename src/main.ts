@@ -5,6 +5,7 @@ import { env } from './infrastructure/config/env.js';
 import { schedulingRoutes } from './modules/scheduling/interfaces/http/routes.js';
 import { identityRoutes } from './modules/identity/interfaces/http/routes.js';
 import { studentRoutes } from './modules/students/interfaces/http/routes.js';
+import { fleetRoutes } from './modules/fleet/interfaces/http/routes.js';
 const app = Fastify({ logger: true });
 await app.register(sensible);
 await app.register(jwt, { secret: env.JWT_SECRET });
@@ -12,6 +13,7 @@ app.decorate('authenticate', async (request: any) => request.jwtVerify());
 app.get('/health', async () => ({ status: 'ok' }));
 await app.register(identityRoutes, { prefix: '/api/v1' });
 await app.register(studentRoutes, { prefix: '/api/v1' });
+await app.register(fleetRoutes, { prefix: '/api/v1' });
 await app.register(schedulingRoutes, { prefix: '/api/v1' });
 await app.listen({ port: env.PORT, host: '0.0.0.0' });
 
