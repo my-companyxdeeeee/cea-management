@@ -10,3 +10,4 @@ app.decorate('authenticate', async (request: any) => request.jwtVerify());
 app.get('/health', async () => ({ status: 'ok' }));
 await app.register(schedulingRoutes, { prefix: '/api/v1' });
 await app.listen({ port: env.PORT, host: '0.0.0.0' });
+
