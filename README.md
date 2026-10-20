@@ -22,6 +22,8 @@ src/
 
 El primer incremento de producto es `identity-access`: inicio de sesión, refresco/revocación de tokens, RBAC y auditoría. Es el prerrequisito de HU1.1–HU1.3 y fija el `tenantId` que nunca debe venir del body o query string. El siguiente incremento es agendamiento (HU3.1–HU3.3); ya incluye el caso de uso y la protección de base de datos para conflictos concurrentes.
 
+El inicio de sesión está disponible en `POST /api/v1/auth/login`. El `tenantId` es requerido exclusivamente para localizar la cuenta y queda validado por RLS; los endpoints protegidos obtienen el tenant del JWT, no de datos controlados por el cliente.
+
 ## Garantías de agendamiento
 
 `appointments` utiliza restricciones de exclusión GiST independientes para estudiante, instructor y vehículo. PostgreSQL rechaza el solapamiento al confirmar, incluso cuando dos peticiones pasan validaciones previas simultáneamente. La aplicación convierte `23P01` en `SCHEDULE_CONFLICT`.
