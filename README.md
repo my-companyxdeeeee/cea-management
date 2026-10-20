@@ -6,10 +6,10 @@ Base modular monolith para una plataforma SaaS multitenant de CEAs, con Clean Ar
 
 1. Copie `.env.example` a `.env` y establezca secretos reales.
 2. Ejecute `docker compose up -d`.
-3. Instale dependencias con `npm install` y aplique `npm run db:migrate`.
+3. Instale dependencias con `npm install`, cree el rol de ejecución con `npm run db:provision-runtime` y aplique `npm run db:migrate`.
 4. Inicie con `npm run dev`.
 
-La conexión de aplicación debe usar un rol que **no** sea propietario de las tablas y no tenga `BYPASSRLS`; de ese modo PostgreSQL aplica las políticas incluso si se omite accidentalmente un filtro en el código.
+La API usa `DATABASE_URL` con un rol que **no** es propietario ni superusuario y no tiene `BYPASSRLS`; las migraciones usan `DATABASE_MIGRATOR_URL`. Esta separación hace que PostgreSQL aplique las políticas incluso si se omite accidentalmente un filtro en el código.
 
 ## Estructura
 

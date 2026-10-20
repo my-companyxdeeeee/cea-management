@@ -16,4 +16,4 @@
 
 - El contexto se carga exclusivamente desde el JWT verificado y se fija por transacción mediante `set_config('app.tenant_id', ..., true)`; nunca se toma de la petición HTTP.
 - El Superadmin no obtiene acceso implícito a datos de estudiantes. Su alcance debe definirse en una historia posterior antes de crear una vía de elevación controlada y auditable.
-- La prueba de integración corre contra PostgreSQL 16 en CI. Localmente se omite si no existe `DATABASE_URL`.
+- La prueba de integración corre contra PostgreSQL 16 en CI usando un rol de aplicación sin privilegios de superusuario. Localmente se omite si no existe `DATABASE_URL`.

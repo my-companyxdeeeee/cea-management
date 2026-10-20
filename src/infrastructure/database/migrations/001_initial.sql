@@ -59,3 +59,7 @@ CREATE POLICY tenant_students ON students USING (tenant_id = app_current_tenant(
 CREATE POLICY tenant_instructors ON instructors USING (tenant_id = app_current_tenant()) WITH CHECK (tenant_id = app_current_tenant());
 CREATE POLICY tenant_vehicles ON vehicles USING (tenant_id = app_current_tenant()) WITH CHECK (tenant_id = app_current_tenant());
 CREATE POLICY tenant_appointments ON appointments USING (tenant_id = app_current_tenant()) WITH CHECK (tenant_id = app_current_tenant());
+
+-- El rol de ejecución no es propietario ni superusuario: RLS se aplica realmente.
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO cea_app;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO cea_app;
