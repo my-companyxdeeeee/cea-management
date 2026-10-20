@@ -1,0 +1,1 @@
+import { expect, it } from 'vitest'; import { listExpiringDocuments } from './list-expiring-documents.js'; const pool={connect:async()=>({query:async()=>({rows:[{id:'v1'}]}),release(){}})} as any; it('lista documentos próximos a vencer',async()=>await expect(listExpiringDocuments(pool,'11111111-1111-4111-8111-111111111111',30)).resolves.toEqual([{id:'v1'}]));
