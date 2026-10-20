@@ -19,3 +19,4 @@ export async function recordPayment(pool: Pool, input: { tenantId: string; stude
 export async function setCreditLimit(pool: Pool, tenantId: string, creditLimit: number | null) {
   return inTenantTransaction(pool, tenantId, async client => { await client.query('UPDATE tenants SET credit_limit=$1 WHERE id=$2', [creditLimit, tenantId]); return { creditLimit }; });
 }
+export async function getStudentAccount(pool: Pool, tenantId: string, studentId: string) { const result = await inTenantTransaction(pool, tenantId, client => client.query<{ charges: string; payments: string; balance: string }>(`SELECT COALESCE(SUM(amount) FILTER (WHERE entry_type='CHARGE'),0)::text AS charges, COALESCE(SUM(amount) FILTER (WHERE entry_type='PAYMENT'),0)::text AS payments, COALESCE(SUM(CASE WHEN entry_type='CHARGE' THEN amount ELSE -amount END),0)::text AS balance FROM student_ledgers WHERE tenant_id=$1 AND student_id=$2`, [tenantId, studentId])); return result.rows[0]; }
