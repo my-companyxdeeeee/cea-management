@@ -8,9 +8,11 @@ const input = {
   kind: 'PRACTICAL' as const, startsAt: new Date('2026-10-21T10:00:00Z'), endsAt: new Date('2026-10-21T11:00:00Z')
 };
 
-function fakePool(error?: { code: string }) {
+function fakePool(error?: { code: string }, unavailable?: string) {
   return { connect: async () => ({
     query: async (sql: string) => {
+      if (sql.includes(`FROM ${unavailable}`)) return { rows: [], rowCount: 0 };
+      if (sql.startsWith('SELECT')) return { rows: [{ id: 'resource' }], rowCount: 1 };
       if (sql.startsWith('INSERT') && error) throw error;
       if (sql.startsWith('INSERT')) return { rows: [{ id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' }] };
       return { rows: [] };
@@ -29,5 +31,8 @@ describe('createAppointment', () => {
   });
   it('crea una reserva cuando PostgreSQL la acepta', async () => {
     await expect(createAppointment(fakePool(), input)).resolves.toEqual({ id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' });
+  });
+  it('rechaza un vehículo no habilitado antes de reservar', async () => {
+    await expect(createAppointment(fakePool(undefined, 'vehicles'), input)).rejects.toMatchObject({ code: 'VEHICLE_NOT_AVAILABLE' });
   });
 });
