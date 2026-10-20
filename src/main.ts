@@ -10,6 +10,7 @@ import { instructorRoutes } from './modules/instructors/interfaces/http/routes.j
 import { financeRoutes } from './modules/finance/interfaces/http/routes.js';
 import { runtRoutes } from './modules/students/interfaces/http/runt-routes.js';
 import { fleetAlertRoutes } from './modules/fleet/interfaces/http/alert-routes.js';
+import { attendanceRoutes } from './modules/attendance/interfaces/http/routes.js';
 const app = Fastify({ logger: true });
 await app.register(sensible);
 await app.register(jwt, { secret: env.JWT_SECRET });
@@ -23,5 +24,6 @@ await app.register(financeRoutes, { prefix: '/api/v1' });
 await app.register(runtRoutes, { prefix: '/api/v1' });
 await app.register(fleetAlertRoutes, { prefix: '/api/v1' });
 await app.register(schedulingRoutes, { prefix: '/api/v1' });
+await app.register(attendanceRoutes, { prefix: '/api/v1' });
 await app.listen({ port: env.PORT, host: '0.0.0.0' });
 
