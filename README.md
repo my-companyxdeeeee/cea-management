@@ -28,6 +28,10 @@ El primer incremento de producto es `identity-access`: inicio de sesión, refres
 
 Además, todas las referencias de una reserva son claves foráneas compuestas por `(tenant_id, id)`: no se puede asociar una reserva de un CEA con un estudiante, instructor o vehículo de otro, aun si alguien conoce un UUID válido.
 
+## Calidad y entrega
+
+El workflow [CI](.github/workflows/ci.yml) se ejecuta para cada pull request contra `master`: compila el proyecto, ejecuta las pruebas unitarias y levanta PostgreSQL 16 para ejecutar la migración y las pruebas de aislamiento RLS de TEN-01.
+
 ## Alcance pendiente de decisión
 
 - La semántica exacta de cartera vencida no se equipara al límite de crédito (HU6.3).
