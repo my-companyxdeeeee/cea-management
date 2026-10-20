@@ -16,3 +16,6 @@ export async function recordPayment(pool: Pool, input: { tenantId: string; stude
     return { balance: result.rows[0].balance };
   });
 }
+export async function setCreditLimit(pool: Pool, tenantId: string, creditLimit: number | null) {
+  return inTenantTransaction(pool, tenantId, async client => { await client.query('UPDATE tenants SET credit_limit=$1 WHERE id=$2', [creditLimit, tenantId]); return { creditLimit }; });
+}

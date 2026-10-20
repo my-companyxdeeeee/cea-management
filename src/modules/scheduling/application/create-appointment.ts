@@ -10,6 +10,9 @@ export async function createAppointment(pool: Pool, input: CreateAppointment) {
       const student = await client.query('SELECT id FROM students WHERE id = $1 FOR KEY SHARE', [input.studentId]);
       if (!student.rowCount) throw new DomainError('El estudiante no existe o no pertenece al CEA.', 'STUDENT_NOT_AVAILABLE');
       if (input.kind === 'PRACTICAL') {
+        const credit = await client.query<{ credit_limit: string | null; balance: string }>(`SELECT t.credit_limit, COALESCE(SUM(CASE WHEN l.entry_type='CHARGE' THEN l.amount ELSE -l.amount END),0)::text AS balance FROM tenants t LEFT JOIN student_ledgers l ON l.tenant_id=t.id AND l.student_id=$2 WHERE t.id=$1 GROUP BY t.credit_limit`, [input.tenantId, input.studentId]);
+        const limit = credit.rows[0]?.credit_limit;
+        if (limit !== null && limit !== undefined && Number(credit.rows[0].balance) > Number(limit)) throw new DomainError('El saldo insoluto supera el límite de crédito del CEA.', 'CREDIT_LIMIT_EXCEEDED');
         const instructor = await client.query(
           "SELECT id FROM instructors WHERE id = $1 AND is_active AND (credential_expires_at IS NULL OR credential_expires_at >= current_date) FOR KEY SHARE", [input.instructorId]
         );
